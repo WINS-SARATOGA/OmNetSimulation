@@ -60,6 +60,7 @@ Packet::Packet(const char *name, int kind) : ::cPacket(name,kind)
     this->srcAddr_var = 0;
     this->destAddr_var = 0;
     this->hopCount_var = 0;
+    this->nextHop_var = 0;
 }
 
 Packet::Packet(const Packet& other) : ::cPacket(other)
@@ -131,6 +132,17 @@ void Packet::setHopCount(int hopCount)
 {
     this->hopCount_var = hopCount;
 }
+
+int Packet::getNextHop() const
+{
+    return nextHop_var;
+}
+
+void Packet::setNextHop(int nextHop)
+{
+    this->nextHop_var = nextHop;
+}
+
 
 class PacketDescriptor : public cClassDescriptor
 {

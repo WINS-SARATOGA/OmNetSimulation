@@ -14,6 +14,7 @@
 #include <map>
 #include <omnetpp.h>
 #include "Packet_m.h"
+#include "behaviors.h"
 
 
 /**
@@ -23,6 +24,7 @@ class Routing : public cSimpleModule
 {
   private:
     int myAddress;
+    Behavior myBehavior;
 
     typedef std::map<int,int> RoutingTable; // destaddr -> gateindex
     RoutingTable rtable;
@@ -41,6 +43,7 @@ Define_Module(Routing);
 void Routing::initialize()
 {
     myAddress = getParentModule()->par("address");
+    myBehavior = (Behavior) getParentModule()->par("behavior").longValue();
 
     dropSignal = registerSignal("drop");
     outputIfSignal = registerSignal("outputIf");
@@ -79,8 +82,10 @@ void Routing::initialize()
 
 void Routing::handleMessage(cMessage *msg)
 {
+    //what is this node's myBehavior?
     Packet *pk = check_and_cast<Packet *>(msg);
     int destAddr = pk->getDestAddr();
+    int srcAddr = pk->getSrcAddr();
 
     if (destAddr == myAddress)
     {
@@ -88,6 +93,21 @@ void Routing::handleMessage(cMessage *msg)
         send(pk, "localOut");
         emit(outputIfSignal, -1); // -1: local
         return;
+    }
+    else
+    {
+        switch(myBehavior)
+        {
+            case RADIO:
+            case CONVERTER:
+                if(pk->getSrcAddr() == myAddress || myAddress != pk->getNextHop())
+                {
+                    delete pk;
+                    return;
+                }
+            default:
+                break;
+        }
     }
 
     RoutingTable::iterator it = rtable.find(destAddr);
@@ -99,11 +119,56 @@ void Routing::handleMessage(cMessage *msg)
         return;
     }
 
-    int outGateIndex = (*it).second;
-    EV << "forwarding packet " << pk->getName() << " on gate index " << outGateIndex << endl;
-    pk->setHopCount(pk->getHopCount()+1);
-    emit(outputIfSignal, outGateIndex);
+    /*
+      int outGateIndex = (*it).second;
+      EV << "forwarding packet " << pk->getName() << " on gate index " << outGateIndex << endl;
+      pk->setHopCount(pk->getHopCount()+1);
+      emit(outputIfSignal, outGateIndex);
 
-    send(pk, "out", outGateIndex);
+      send(pk, "out", outGateIndex);
+      */
+    int outGateIndex = (*it).second;
+
+    switch(myBehavior)
+    {
+        case PEOPLE:
+        case GRID:
+            //TODO
+            //pk->setNextHop()
+
+            EV << "forwarding packet " << pk->getName() << " on gate index " << outGateIndex << endl;
+            pk->setHopCount(pk->getHopCount()+1);
+            emit(outputIfSignal, outGateIndex);
+
+            send(pk, "out", outGateIndex);
+            break;
+        case CONVERTER:
+            //TODO
+            //pk->setNextHop()
+            //get the neighbors
+            //only broadcast to radios & converters
+
+            EV << "forwarding packet " << pk->getName() << " on gate index " << outGateIndex << endl;
+            pk->setHopCount(pk->getHopCount()+1);
+            emit(outputIfSignal, outGateIndex);
+
+            send(pk, "out", outGateIndex);
+            break;
+        case RADIO:
+            //TODO
+            //pk->setNextHop()
+
+            EV << "forwarding packet " << pk->getName() << " on gate index " << outGateIndex << endl;
+            pk->setHopCount(pk->getHopCount()+1);
+            emit(outputIfSignal, outGateIndex);
+
+            send(pk, "out", outGateIndex);
+            break;
+        default:
+            EV << "UNKNOWN BEHAVIOR TYPE!" << endl;
+            delete pk;
+            return;
+            //break;
+    }
 }
 

@@ -7,6 +7,7 @@
 // `license' for details on this and other legal matters.
 //
 
+//typedef enum Behavior { PEOPLE, GRID, CONVERTER, RADIO } Behavior;
 
 package node;
 
@@ -19,6 +20,8 @@ module Node
     parameters:
         int address;
         string appType;
+        int behavior; //"radio" "convert" "people" "grid"
+        int portCount = sizeof(port);
         @display("i=misc/node_vs,gold");
     gates:
         inout port[];

@@ -32,6 +32,7 @@ class Packet : public ::cPacket
     int srcAddr_var;
     int destAddr_var;
     int hopCount_var;
+    int nextHop_var;
 
   private:
     void copy(const Packet& other);
@@ -56,6 +57,8 @@ class Packet : public ::cPacket
     virtual void setDestAddr(int destAddr);
     virtual int getHopCount() const;
     virtual void setHopCount(int hopCount);
+    virtual int getNextHop() const;
+    virtual void setNextHop(int nextHop);
 };
 
 inline void doPacking(cCommBuffer *b, Packet& obj) {obj.parsimPack(b);}

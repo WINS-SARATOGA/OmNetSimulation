@@ -145,5 +145,6 @@ $O/node/L2Queue.o: node/L2Queue.cc
 $O/node/Packet_m.o: node/Packet_m.cc \
 	node/Packet_m.h
 $O/node/Routing.o: node/Routing.cc \
-	node/Packet_m.h
+	node/Packet_m.h \
+	node/behaviors.h
 
