@@ -1,0 +1,24 @@
+version 2
+run Net5-0-20171121-09:34:12-4261
+attr configname Net5
+attr datetime 20171121-09:34:12
+attr experiment Net5
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvars2 $repetition=0
+attr measurement ""
+attr network networks.Net5
+attr processid 4261
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+
+vector 3  Net5.rte[3].app  endToEndDelay:vector  ETV
+attr interpolationmode  none
+attr title  "end-to-end delay of arrived packets, vector"
+attr unit  s
+3	6	0.003183561408	0
+3	13	0.009638373253	0.009054526563
+3	16	0.010710302541	0
