@@ -24,10 +24,14 @@ class Routing : public cSimpleModule
 {
   private:
     int myAddress;
-    Behavior myBehavior;
+    int myBehavior;
 
     typedef std::map<int,int> RoutingTable; // destaddr -> gateindex
+    typedef std::map<int,cModule*> RoutingModule;
+    typedef std::map<int,cModule*> NeighborTable;
     RoutingTable rtable;
+    RoutingModule rtable_addresses;
+    NeighborTable ntable;
 
     simsignal_t dropSignal;
     simsignal_t outputIfSignal;
@@ -43,7 +47,7 @@ Define_Module(Routing);
 void Routing::initialize()
 {
     myAddress = getParentModule()->par("address");
-    myBehavior = (Behavior) getParentModule()->par("behavior").longValue();
+    myBehavior = (int) getParentModule()->par("behavior");
 
     dropSignal = registerSignal("drop");
     outputIfSignal = registerSignal("outputIf");
@@ -63,6 +67,11 @@ void Routing::initialize()
 
     cTopology::Node *thisNode = topo->getNodeFor(getParentModule());
 
+    for(int i = 0; i < thisNode->getNumOutLinks(); i++)
+    {
+        ntable[thisNode->getLinkOut(i)->getLocalGate()->getIndex()] = thisNode->getLinkOut(i)->getRemoteNode()->getModule();
+    }
+
     // find and store next hops
     for (int i=0; i<topo->getNumNodes(); i++)
     {
@@ -75,6 +84,7 @@ void Routing::initialize()
         int gateIndex = parentModuleGate->getIndex();
         int address = topo->getNode(i)->getModule()->par("address");
         rtable[address] = gateIndex;
+        rtable_addresses[address] = thisNode->getPath(0)->getRemoteNode()->getModule();
         EV << "  towards address " << address << " gateIndex is " << gateIndex << endl;
     }
     delete topo;
@@ -86,6 +96,8 @@ void Routing::handleMessage(cMessage *msg)
     Packet *pk = check_and_cast<Packet *>(msg);
     int destAddr = pk->getDestAddr();
     int srcAddr = pk->getSrcAddr();
+    int nextHopBehavior;
+    int numNeighbors = getParentModule()->gateSize("port");
 
     if (destAddr == myAddress)
     {
@@ -96,11 +108,16 @@ void Routing::handleMessage(cMessage *msg)
     }
     else
     {
+        //TODO
+        //this is band aid
         switch(myBehavior)
         {
             case RADIO:
             case CONVERTER:
-                if(pk->getSrcAddr() == myAddress || myAddress != pk->getNextHop())
+                //TODO
+                //RADIO GETTING CAUGHT UP HERE
+                EV << "my behavior: " << myBehavior << endl;
+                if(srcAddr == myAddress || myAddress != pk->getNextHop())
                 {
                     delete pk;
                     return;
@@ -111,7 +128,8 @@ void Routing::handleMessage(cMessage *msg)
     }
 
     RoutingTable::iterator it = rtable.find(destAddr);
-    if (it==rtable.end())
+    RoutingModule::iterator it2 = rtable_addresses.find(destAddr);
+    if (it==rtable.end() || it2==rtable_addresses.end())
     {
         EV << "address " << destAddr << " unreachable, discarding packet " << pk->getName() << endl;
         emit(dropSignal, (long)pk->getByteLength());
@@ -129,40 +147,51 @@ void Routing::handleMessage(cMessage *msg)
       */
     int outGateIndex = (*it).second;
 
+    pk->setHopCount(pk->getHopCount()+1);
+    EV <<   (int) (*it2).second->par("address") << endl;
+    EV << "forwarding packet " << pk->getName() << " on gate index " << outGateIndex << endl;
+    emit(outputIfSignal, outGateIndex);
+
     switch(myBehavior)
     {
         case PEOPLE:
         case GRID:
-            //TODO
-            //pk->setNextHop()
-
-            EV << "forwarding packet " << pk->getName() << " on gate index " << outGateIndex << endl;
-            pk->setHopCount(pk->getHopCount()+1);
-            emit(outputIfSignal, outGateIndex);
-
+            pk->setNextHop((*it2).second->par("address"));
             send(pk, "out", outGateIndex);
             break;
         case CONVERTER:
-            //TODO
-            //pk->setNextHop()
-            //get the neighbors
-            //only broadcast to radios & converters
 
-            EV << "forwarding packet " << pk->getName() << " on gate index " << outGateIndex << endl;
-            pk->setHopCount(pk->getHopCount()+1);
-            emit(outputIfSignal, outGateIndex);
+            pk->setNextHop((*it2).second->par("address"));
+            nextHopBehavior = (*it2).second->par("behavior");
 
-            send(pk, "out", outGateIndex);
+            if(CONVERTER == nextHopBehavior || RADIO == nextHopBehavior)
+            {
+                for(int i = 0; i < numNeighbors; i++)
+                {
+                    int neighborBehavior = ntable[i]->par("behavior");
+                    if(CONVERTER == neighborBehavior || RADIO == neighborBehavior)
+                        send(pk->dup(), "out", i);
+                }
+            }
+            else
+            {
+                emit(outputIfSignal,outGateIndex);
+                send(pk, "out", outGateIndex);
+                break;
+            }
+
+
             break;
         case RADIO:
-            //TODO
-            //pk->setNextHop()
+            EV << "num neighbors " << numNeighbors << endl;
 
-            EV << "forwarding packet " << pk->getName() << " on gate index " << outGateIndex << endl;
-            pk->setHopCount(pk->getHopCount()+1);
-            emit(outputIfSignal, outGateIndex);
 
-            send(pk, "out", outGateIndex);
+
+            pk->setNextHop((*it2).second->par("address"));
+            for(int i = 0; i < numNeighbors; i++)
+            {
+                send(pk->dup(), "out", i);
+            }
             break;
         default:
             EV << "UNKNOWN BEHAVIOR TYPE!" << endl;
