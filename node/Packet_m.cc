@@ -85,6 +85,7 @@ void Packet::copy(const Packet& other)
     this->srcAddr_var = other.srcAddr_var;
     this->destAddr_var = other.destAddr_var;
     this->hopCount_var = other.hopCount_var;
+    this->nextHop_var = other.nextHop_var;
 }
 
 void Packet::parsimPack(cCommBuffer *b)

@@ -114,10 +114,7 @@ void Routing::handleMessage(cMessage *msg)
         {
             case RADIO:
             case CONVERTER:
-                //TODO
-                //RADIO GETTING CAUGHT UP HERE
-                EV << "my behavior: " << myBehavior << endl;
-                if(srcAddr == myAddress || myAddress != pk->getNextHop())
+                if(myAddress != pk->getNextHop())
                 {
                     delete pk;
                     return;
@@ -148,7 +145,6 @@ void Routing::handleMessage(cMessage *msg)
     int outGateIndex = (*it).second;
 
     pk->setHopCount(pk->getHopCount()+1);
-    EV <<   (int) (*it2).second->par("address") << endl;
     EV << "forwarding packet " << pk->getName() << " on gate index " << outGateIndex << endl;
     emit(outputIfSignal, outGateIndex);
 
@@ -184,14 +180,13 @@ void Routing::handleMessage(cMessage *msg)
             break;
         case RADIO:
             EV << "num neighbors " << numNeighbors << endl;
-
-
-
             pk->setNextHop((*it2).second->par("address"));
+
             for(int i = 0; i < numNeighbors; i++)
             {
                 send(pk->dup(), "out", i);
             }
+
             break;
         default:
             EV << "UNKNOWN BEHAVIOR TYPE!" << endl;
