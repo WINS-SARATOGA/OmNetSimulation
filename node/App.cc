@@ -25,7 +25,6 @@ class App : public cSimpleModule
     // configuration
     int myAddress;
     std::vector<int> destAddresses;
-    std::vector<int> srcAddresses;
     cPar *sendIATime;
     cPar *packetLengthBytes;
 
@@ -63,20 +62,6 @@ App::~App()
 void App::initialize()
 {
     myAddress = par("address");
-    bool isSrc = 0;
-    EV << "vector_size:" << srcAddresses.size() << endl;
-
-    for(int i = 0; i<srcAddresses.size(); i++)
-    {
-        if(myAddress == srcAddresses[i])
-        {
-            isSrc = 1;
-            break;
-        }
-
-    }
-    if (!isSrc)
-        return;
     packetLengthBytes = &par("packetLength");
     sendIATime = &par("sendIaTime");  // volatile parameter
     pkCounter = 0;
@@ -92,6 +77,21 @@ void App::initialize()
 
     if (destAddresses.size() == 0)
         throw cRuntimeError("At least one address must be specified in the destAddresses parameter!");
+    EV << "vector_size:" << destAddresses.size() << endl;
+
+////We assume dest = src
+    bool isSrc = 0;
+    for(int i = 0; i < destAddresses.size(); i++)
+    {
+        if(myAddress == destAddresses[i])
+        {
+            isSrc = 1;
+            break;
+        }
+
+    }
+    if (!isSrc)
+        return;
 
     generatePacket = new cMessage("nextPacket");
     scheduleAt(sendIATime->doubleValue(), generatePacket);
