@@ -28,28 +28,40 @@ network Net9
             delay = 1.5ms;
             datarate = 0.5Mbps;
         }
-    submodules:
-        rte[9]: Node {
+        submodules:
+        //rte[9]: Node {
+        //    address = index;
+        //}
+        people[3]: Node {
             address = index;
         }
+        grid[1]: Node {
+            address = index + 3;
+        }
+        converter[2]: Node {
+            address = index + 4;
+        }
+        radio[3]: Node {
+            address = index + 6;
+        }
     connections:
-        rte[0].port++ <--> C <--> rte[1].port++;
-        rte[0].port++ <--> C <--> rte[2].port++;
+        people[0].port++ <--> C <--> people[1].port++;
+        people[0].port++ <--> C <--> people[2].port++;
         
-        rte[1].port++ <--> C <--> rte[2].port++;
-        rte[1].port++ <--> C <--> rte[3].port++;
+        people[1].port++ <--> C <--> people[2].port++;
+        people[1].port++ <--> C <--> converter[0].port++;
         
-        rte[2].port++ <--> C <--> rte[3].port++;
+        people[2].port++ <--> C <--> converter[0].port++;
         
-        rte[3].port++ <--> C2 <--> rte[4].port++;
-        rte[3].port++ <--> C2 <--> rte[5].port++;
-        rte[3].port++ <--> C2 <--> rte[6].port++;
+        converter[0].port++ <--> C2 <--> radio[0].port++;
+        converter[0].port++ <--> C2 <--> radio[1].port++;
+        converter[0].port++ <--> C2 <--> radio[2].port++;
         
-        rte[4].port++ <--> C2 <--> rte[7].port++;
+        radio[0].port++ <--> C2 <--> radio[2].port++;
         
-        rte[5].port++ <--> C2 <--> rte[7].port++;
+        radio[1].port++ <--> C2 <--> radio[2].port++;
         
-        rte[6].port++ <--> C2 <--> rte[7].port++;
+        radio[2].port++ <--> C2 <--> converter[1].port++;
         
-        rte[7].port++ <--> C <--> rte[8].port++;
+        converter[1].port++ <--> C <--> grid[0].port++; 
 }
