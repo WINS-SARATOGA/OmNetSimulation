@@ -15,15 +15,15 @@ import ned.DatarateChannel;
 //
 // A ten-node network topology
 //
-network Net5
+network Net9
 {
     types:
-        channel C extends DatarateChannel
+        channel C extends DatarateChannel //people and grid
         {
             delay = 1ms;//uniform(0.1ms, 1ms);
             datarate = 1Mbps;
         }
-        channel C2 extends DatarateChannel
+        channel C2 extends DatarateChannel //radios and converters
         {
             delay = 1.5ms;
             datarate = 0.5Mbps;
@@ -53,4 +53,3 @@ network Net5
         
         rte[7].port++ <--> C <--> rte[8].port++;
 }
-

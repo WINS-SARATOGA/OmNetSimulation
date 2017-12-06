@@ -1,0 +1,38 @@
+file 1274 1512537713                                            
+version 2
+run Net9-0-20171206-00:21:29-8225
+attr configname Net9
+attr datetime 20171206-00:21:29
+attr experiment Net9
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvars2 $repetition=0
+attr measurement ""
+attr network networks.Net9
+attr processid 8225
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+
+vector 1  Net9.rte[1].app  endToEndDelay:vector  ETV
+attr interpolationmode  none
+attr title  "end-to-end delay of arrived packets, vector"
+attr unit  s
+vector 2  Net9.rte[2].app  endToEndDelay:vector  ETV
+attr interpolationmode  none
+attr title  "end-to-end delay of arrived packets, vector"
+attr unit  s
+vector 0  Net9.rte[0].app  endToEndDelay:vector  ETV
+attr interpolationmode  none
+attr title  "end-to-end delay of arrived packets, vector"
+attr unit  s
+vector 8  Net9.rte[8].app  endToEndDelay:vector  ETV
+attr interpolationmode  none
+attr title  "end-to-end delay of arrived packets, vector"
+attr unit  s
+0	972 89 63 191 0.031521371843 0.059631119358 3 0.009192 0.009192 0.027576 0.000253478592
+1	1061 116 26 127 0.02175130758 0.044858198403 4 0 0.010845174328 0.029229174328 0.00028660353420471
+2	1177 22 39 39 0.025860963234 0.025860963234 1 0 0 0 0
+8	1199 75 153 217 0.05186624412 0.063137603884 3 0 0.054152 0.054152 0.002932439104

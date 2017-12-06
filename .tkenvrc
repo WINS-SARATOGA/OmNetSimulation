@@ -1,4 +1,4 @@
 # Partial OMNeT++/Tkenv config file -- see $HOME/.tkenvrc as well
-config default-configname	{Net5}
+config default-configname	{Net9}
 config default-runnumber	{0}
 
