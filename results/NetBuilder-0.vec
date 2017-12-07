@@ -1,35 +1,22 @@
 version 2
-run NetBuilder-0-20171116-12:21:43-10303
+run NetBuilder-0-20171207-12:41:26-10230
 attr configname NetBuilder
-attr datetime 20171116-12:21:43
+attr datetime 20171207-12:41:26
 attr experiment NetBuilder
 attr inifile omnetpp.ini
 attr iterationvars ""
 attr iterationvars2 $repetition=0
 attr measurement ""
 attr network networks.Dynamic
-attr processid 10303
+attr processid 10230
 attr repetition 0
 attr replication #0
 attr resultdir results
 attr runnumber 0
 attr seedset 0
 
-vector 1  Dynamic.rte2.app  endToEndDelay:vector  ETV
+vector 49  Dynamic.node501.app  endToEndDelay:vector  ETV
 attr interpolationmode  none
 attr title  "end-to-end delay of arrived packets, vector"
 attr unit  s
-vector 0  Dynamic.rte1.app  endToEndDelay:vector  ETV
-attr interpolationmode  none
-attr title  "end-to-end delay of arrived packets, vector"
-attr unit  s
-vector 7  Dynamic.rte8.app  endToEndDelay:vector  ETV
-attr interpolationmode  none
-attr title  "end-to-end delay of arrived packets, vector"
-attr unit  s
-0	199	1.915688870318	0
-0	602	5.898221345725	0
-1	76	0.898560388483	0
-1	252	2.49680412052	0
-1	291	2.807771925489	0
-7	657	6.382399430268	0
+49	12	0.056809588399	0.036384

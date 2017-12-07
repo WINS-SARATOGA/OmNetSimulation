@@ -88,12 +88,17 @@ void NetBuilder::buildNetwork(cModule *parent)
         long nodeid = atol(tokens[0].c_str());
         const char *name = tokens[1].c_str();
         const char *modtypename = tokens[2].c_str();
+        //char *new_name = (char *) malloc(tokens[0].size()+tokens[1].size()+1);
+        //strcpy(new_name,tokens[0].c_str());
+        //strcat(new_name,name);
         EV << "NODE id=" << nodeid << " name=" << name << " type=" << modtypename << "\n";
 
         // create module
         cModuleType *modtype = cModuleType::find(modtypename);
         if (!modtype)
             throw cRuntimeError("module type `%s' for node `%s' not found", modtypename, name);
+
+        //cModule *mod = modtype->create(new_name, parent);
         cModule *mod = modtype->create(name, parent);
         nodeid2mod[nodeid] = mod;
 
