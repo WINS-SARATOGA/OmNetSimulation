@@ -1,0 +1,40 @@
+version 2
+run Net60a-0-20171107-09:58:45-16736
+attr configname Net60a
+attr datetime 20171107-09:58:45
+attr experiment Net60a
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsf ""
+attr measurement ""
+attr network networks.Net60a
+attr processid 16736
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+param **.app.packetLength "4096 bytes"
+param **.appType "\"App\""
+param **.destAddresses "\"1 28 50\""
+
+vector 50  Net60a.rte[50].app  endToEndDelay:vector  ETV
+attr interpolationmode  none
+attr title  "end-to-end delay of arrived packets, vector"
+attr unit  s
+vector 1  Net60a.rte[1].app  endToEndDelay:vector  ETV
+attr interpolationmode  none
+attr title  "end-to-end delay of arrived packets, vector"
+attr unit  s
+vector 28  Net60a.rte[28].app  endToEndDelay:vector  ETV
+attr interpolationmode  none
+attr title  "end-to-end delay of arrived packets, vector"
+attr unit  s
+1	97	0.074747499465	0.001062144
+1	136	0.092355938124	0.001194912
+1	206	0.152292997665	0.001062144
+1	225	0.1552607525	0.000531072
+28	171	0.126936553438	0.001062144
+50	23	0.021089428399	0.00066384
+50	62	0.059579581093	0.001194912
+50	260	0.220025526757	0.001062144
