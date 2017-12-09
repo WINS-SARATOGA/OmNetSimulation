@@ -1,12 +1,10 @@
 *.o
-computed/
-results/
-out/
-parsim/
-
-#IDE Files
-.tkenvrc
-.cproject
-.nedfolders
-.oppbuildspec
-.project
+./computed/
+./results/
+./out/
+./parsim/
+./.tkenvrc
+./.cproject
+./.nedfolders
+./.oppbuildspec
+./.project
