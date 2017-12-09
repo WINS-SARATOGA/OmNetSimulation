@@ -1,7 +1,6 @@
 //
 // This file is part of an OMNeT++/OMNEST simulation example.
 //
-// Copyright (C) 1992-2015 Andras Varga
 //
 // This file is distributed WITHOUT ANY WARRANTY. See the file
 // `license' for details on this and other legal matters.
@@ -77,6 +76,22 @@ void App::initialize()
 
     if (destAddresses.size() == 0)
         throw cRuntimeError("At least one address must be specified in the destAddresses parameter!");
+
+    EV << "vector_size:" << destAddresses.size() << endl;
+
+////We assume dest = src
+    bool isSrc = 0;
+    for(int i = 0; i < destAddresses.size(); i++)
+    {
+        if(myAddress == destAddresses[i])
+        {
+            isSrc = 1;
+            break;
+        }
+
+    }
+    if (!isSrc)
+        return;
 
     generatePacket = new cMessage("nextPacket");
     scheduleAt(sendIATime->doubleValue(), generatePacket);

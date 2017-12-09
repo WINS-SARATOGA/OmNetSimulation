@@ -184,6 +184,7 @@ Packet::Packet(const char *name, short kind) : ::omnetpp::cPacket(name,kind)
     this->srcAddr = 0;
     this->destAddr = 0;
     this->hopCount = 0;
+    this->nextHop = 0;
 }
 
 Packet::Packet(const Packet& other) : ::omnetpp::cPacket(other)
@@ -208,6 +209,7 @@ void Packet::copy(const Packet& other)
     this->srcAddr = other.srcAddr;
     this->destAddr = other.destAddr;
     this->hopCount = other.hopCount;
+    this->nextHop = other.nextHop;
 }
 
 void Packet::parsimPack(omnetpp::cCommBuffer *b) const
@@ -216,6 +218,7 @@ void Packet::parsimPack(omnetpp::cCommBuffer *b) const
     doParsimPacking(b,this->srcAddr);
     doParsimPacking(b,this->destAddr);
     doParsimPacking(b,this->hopCount);
+    doParsimPacking(b,this->nextHop);
 }
 
 void Packet::parsimUnpack(omnetpp::cCommBuffer *b)
@@ -224,6 +227,7 @@ void Packet::parsimUnpack(omnetpp::cCommBuffer *b)
     doParsimUnpacking(b,this->srcAddr);
     doParsimUnpacking(b,this->destAddr);
     doParsimUnpacking(b,this->hopCount);
+    doParsimUnpacking(b,this->nextHop);
 }
 
 int Packet::getSrcAddr() const
@@ -254,6 +258,16 @@ int Packet::getHopCount() const
 void Packet::setHopCount(int hopCount)
 {
     this->hopCount = hopCount;
+}
+
+int Packet::getNextHop() const
+{
+    return this->nextHop;
+}
+
+void Packet::setNextHop(int nextHop)
+{
+    this->nextHop = nextHop;
 }
 
 class PacketDescriptor : public omnetpp::cClassDescriptor
@@ -321,7 +335,7 @@ const char *PacketDescriptor::getProperty(const char *propertyname) const
 int PacketDescriptor::getFieldCount() const
 {
     omnetpp::cClassDescriptor *basedesc = getBaseClassDescriptor();
-    return basedesc ? 3+basedesc->getFieldCount() : 3;
+    return basedesc ? 4+basedesc->getFieldCount() : 4;
 }
 
 unsigned int PacketDescriptor::getFieldTypeFlags(int field) const
@@ -336,8 +350,9 @@ unsigned int PacketDescriptor::getFieldTypeFlags(int field) const
         FD_ISEDITABLE,
         FD_ISEDITABLE,
         FD_ISEDITABLE,
+        FD_ISEDITABLE,
     };
-    return (field>=0 && field<3) ? fieldTypeFlags[field] : 0;
+    return (field>=0 && field<4) ? fieldTypeFlags[field] : 0;
 }
 
 const char *PacketDescriptor::getFieldName(int field) const
@@ -352,8 +367,9 @@ const char *PacketDescriptor::getFieldName(int field) const
         "srcAddr",
         "destAddr",
         "hopCount",
+        "nextHop",
     };
-    return (field>=0 && field<3) ? fieldNames[field] : nullptr;
+    return (field>=0 && field<4) ? fieldNames[field] : nullptr;
 }
 
 int PacketDescriptor::findField(const char *fieldName) const
@@ -363,6 +379,7 @@ int PacketDescriptor::findField(const char *fieldName) const
     if (fieldName[0]=='s' && strcmp(fieldName, "srcAddr")==0) return base+0;
     if (fieldName[0]=='d' && strcmp(fieldName, "destAddr")==0) return base+1;
     if (fieldName[0]=='h' && strcmp(fieldName, "hopCount")==0) return base+2;
+    if (fieldName[0]=='n' && strcmp(fieldName, "nextHop")==0) return base+3;
     return basedesc ? basedesc->findField(fieldName) : -1;
 }
 
@@ -378,8 +395,9 @@ const char *PacketDescriptor::getFieldTypeString(int field) const
         "int",
         "int",
         "int",
+        "int",
     };
-    return (field>=0 && field<3) ? fieldTypeStrings[field] : nullptr;
+    return (field>=0 && field<4) ? fieldTypeStrings[field] : nullptr;
 }
 
 const char **PacketDescriptor::getFieldPropertyNames(int field) const
@@ -449,6 +467,7 @@ std::string PacketDescriptor::getFieldValueAsString(void *object, int field, int
         case 0: return long2string(pp->getSrcAddr());
         case 1: return long2string(pp->getDestAddr());
         case 2: return long2string(pp->getHopCount());
+        case 3: return long2string(pp->getNextHop());
         default: return "";
     }
 }
@@ -466,6 +485,7 @@ bool PacketDescriptor::setFieldValueAsString(void *object, int field, int i, con
         case 0: pp->setSrcAddr(string2long(value)); return true;
         case 1: pp->setDestAddr(string2long(value)); return true;
         case 2: pp->setHopCount(string2long(value)); return true;
+        case 3: pp->setNextHop(string2long(value)); return true;
         default: return false;
     }
 }

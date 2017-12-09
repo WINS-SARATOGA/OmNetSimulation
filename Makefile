@@ -1,12 +1,12 @@
 #
-# OMNeT++/OMNEST Makefile for routing
+# OMNeT++/OMNEST Makefile for rbn
 #
 # This file was generated with the command:
 #  opp_makemake -f --deep
 #
 
 # Name of target to be created (-o option)
-TARGET = routing$(EXE_SUFFIX)
+TARGET = rbn$(EXE_SUFFIX)
 
 # User interface (uncomment one) (-u option)
 USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(QTENV_LIBS) $(CMDENV_LIBS)

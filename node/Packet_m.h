@@ -19,7 +19,7 @@
 
 
 /**
- * Class generated from <tt>node/Packet.msg:15</tt> by nedtool.
+ * Class generated from <tt>node/Packet.msg:14</tt> by nedtool.
  * <pre>
  * //
  * // Represents a packet in the network.
@@ -29,6 +29,7 @@
  *     int srcAddr;
  *     int destAddr;
  *     int hopCount;
+ *     int nextHop;
  * }
  * </pre>
  */
@@ -38,6 +39,7 @@ class Packet : public ::omnetpp::cPacket
     int srcAddr;
     int destAddr;
     int hopCount;
+    int nextHop;
 
   private:
     void copy(const Packet& other);
@@ -62,6 +64,8 @@ class Packet : public ::omnetpp::cPacket
     virtual void setDestAddr(int destAddr);
     virtual int getHopCount() const;
     virtual void setHopCount(int hopCount);
+    virtual int getNextHop() const;
+    virtual void setNextHop(int nextHop);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const Packet& obj) {obj.parsimPack(b);}

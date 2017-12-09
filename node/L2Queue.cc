@@ -1,7 +1,6 @@
 //
 // This file is part of an OMNeT++/OMNEST simulation example.
 //
-// Copyright (C) 1992-2015 Andras Varga
 //
 // This file is distributed WITHOUT ANY WARRANTY. See the file
 // `license' for details on this and other legal matters.
@@ -10,6 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <omnetpp.h>
+
 
 using namespace omnetpp;
 
@@ -63,7 +63,6 @@ void L2Queue::initialize()
 
     if (par("useCutThroughSwitching"))
         gate("line$i")->setDeliverOnReceptionStart(true);
-
     frameCapacity = par("frameCapacity");
 
     qlenSignal = registerSignal("qlen");

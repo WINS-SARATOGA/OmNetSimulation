@@ -1,0 +1,12 @@
+*.o
+computed/
+results/
+out/
+parsim/
+
+#IDE Files
+.tkenvrc
+.cproject
+.nedfolders
+.oppbuildspec
+.project

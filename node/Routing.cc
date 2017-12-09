@@ -1,7 +1,6 @@
 //
 // This file is part of an OMNeT++/OMNEST simulation example.
 //
-// Copyright (C) 1992-2015 Andras Varga
 //
 // This file is distributed WITHOUT ANY WARRANTY. See the file
 // `license' for details on this and other legal matters.
@@ -14,8 +13,8 @@
 #include <map>
 #include <omnetpp.h>
 #include "Packet_m.h"
-
 using namespace omnetpp;
+#include "behaviors.h"
 
 /**
  * Demonstrates static routing, utilizing the cTopology class.
@@ -24,9 +23,14 @@ class Routing : public cSimpleModule
 {
   private:
     int myAddress;
+    int myBehavior;
 
-    typedef std::map<int, int> RoutingTable;  // destaddr -> gateindex
+    typedef std::map<int,int> RoutingTable; // destaddr -> gateindex
+    typedef std::map<int,cModule*> RoutingModule;
+    typedef std::map<int,cModule*> NeighborTable;
     RoutingTable rtable;
+    RoutingModule rtable_addresses;
+    NeighborTable ntable;
 
     simsignal_t dropSignal;
     simsignal_t outputIfSignal;
@@ -41,6 +45,7 @@ Define_Module(Routing);
 void Routing::initialize()
 {
     myAddress = getParentModule()->par("address");
+    myBehavior = (int) getParentModule()->par("behavior");
 
     dropSignal = registerSignal("drop");
     outputIfSignal = registerSignal("outputIf");
@@ -60,19 +65,24 @@ void Routing::initialize()
 
     cTopology::Node *thisNode = topo->getNodeFor(getParentModule());
 
+    for(int i = 0; i < thisNode->getNumOutLinks(); i++)
+    {
+        ntable[thisNode->getLinkOut(i)->getLocalGate()->getIndex()] = thisNode->getLinkOut(i)->getRemoteNode()->getModule();
+    }
+
     // find and store next hops
-    for (int i = 0; i < topo->getNumNodes(); i++) {
-        if (topo->getNode(i) == thisNode)
-            continue;  // skip ourselves
+    for (int i=0; i<topo->getNumNodes(); i++)
+    {
+        if (topo->getNode(i)==thisNode) continue; // skip ourselves
         topo->calculateUnweightedSingleShortestPathsTo(topo->getNode(i));
 
-        if (thisNode->getNumPaths() == 0)
-            continue;  // not connected
+        if (thisNode->getNumPaths()==0) continue; // not connected
 
         cGate *parentModuleGate = thisNode->getPath(0)->getLocalGate();
         int gateIndex = parentModuleGate->getIndex();
         int address = topo->getNode(i)->getModule()->par("address");
         rtable[address] = gateIndex;
+        rtable_addresses[address] = thisNode->getPath(0)->getRemoteNode()->getModule();
         EV << "  towards address " << address << " gateIndex is " << gateIndex << endl;
     }
     delete topo;
@@ -80,18 +90,42 @@ void Routing::initialize()
 
 void Routing::handleMessage(cMessage *msg)
 {
+    //what is this node's myBehavior?
     Packet *pk = check_and_cast<Packet *>(msg);
     int destAddr = pk->getDestAddr();
+    //int srcAddr = pk->getSrcAddr();
+    int nextHopBehavior;
+    int numNeighbors = getParentModule()->gateSize("port");
 
-    if (destAddr == myAddress) {
+    if (destAddr == myAddress)
+    {
         EV << "local delivery of packet " << pk->getName() << endl;
         send(pk, "localOut");
-        emit(outputIfSignal, -1);  // -1: local
+        emit(outputIfSignal, -1); // -1: local
         return;
+    }
+    else
+    {
+        //TODO
+        //this is band aid
+        switch(myBehavior)
+        {
+            case RADIO:
+            case CONVERTER:
+                if(myAddress != pk->getNextHop())
+                {
+                    delete pk;
+                    return;
+                }
+            default:
+                break;
+        }
     }
 
     RoutingTable::iterator it = rtable.find(destAddr);
-    if (it == rtable.end()) {
+    RoutingModule::iterator it2 = rtable_addresses.find(destAddr);
+    if (it==rtable.end() || it2==rtable_addresses.end())
+    {
         EV << "address " << destAddr << " unreachable, discarding packet " << pk->getName() << endl;
         emit(dropSignal, (long)pk->getByteLength());
         delete pk;
@@ -99,10 +133,56 @@ void Routing::handleMessage(cMessage *msg)
     }
 
     int outGateIndex = (*it).second;
-    EV << "forwarding packet " << pk->getName() << " on gate index " << outGateIndex << endl;
+
     pk->setHopCount(pk->getHopCount()+1);
+    EV << "forwarding packet " << pk->getName() << " on gate index " << outGateIndex << endl;
     emit(outputIfSignal, outGateIndex);
 
-    send(pk, "out", outGateIndex);
+    switch(myBehavior)
+    {
+        case PEOPLE:
+        case GRID:
+            pk->setNextHop((*it2).second->par("address"));
+            send(pk, "out", outGateIndex);
+            break;
+        case CONVERTER:
+
+            pk->setNextHop((*it2).second->par("address"));
+            nextHopBehavior = (*it2).second->par("behavior");
+
+            if(CONVERTER == nextHopBehavior || RADIO == nextHopBehavior)
+            {
+                for(int i = 0; i < numNeighbors; i++)
+                {
+                    int neighborBehavior = ntable[i]->par("behavior");
+                    if(CONVERTER == neighborBehavior || RADIO == neighborBehavior)
+                        send(pk->dup(), "out", i);
+                }
+            }
+            else
+            {
+                emit(outputIfSignal,outGateIndex);
+                send(pk, "out", outGateIndex);
+                break;
+            }
+
+
+            break;
+        case RADIO:
+            EV << "num neighbors " << numNeighbors << endl;
+            pk->setNextHop((*it2).second->par("address"));
+
+            for(int i = 0; i < numNeighbors; i++)
+            {
+                send(pk->dup(), "out", i);
+            }
+
+            break;
+        default:
+            EV << "UNKNOWN BEHAVIOR TYPE!" << endl;
+            delete pk;
+            return;
+            //break;
+    }
 }
 

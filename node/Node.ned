@@ -1,12 +1,11 @@
 //
 // This file is part of an OMNeT++/OMNEST simulation example.
 //
-// Copyright (C) 1992-2015 Andras Varga
 //
 // This file is distributed WITHOUT ANY WARRANTY. See the file
 // `license' for details on this and other legal matters.
 //
-
+//typedef enum Behavior { PEOPLE, GRID, CONVERTER, RADIO } Behavior;
 
 package node;
 
@@ -19,6 +18,8 @@ module Node
     parameters:
         int address;
         string appType;
+        int behavior; //"radio" "convert" "people" "grid"
+        int portCount = sizeof(port);
         @display("i=misc/node_vs,gold");
     gates:
         inout port[];
