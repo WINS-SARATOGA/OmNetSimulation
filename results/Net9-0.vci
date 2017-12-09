@@ -1,4 +1,4 @@
-file 128578 1512575213                                          
+file 128578 1512787496                                          
 version 2
 run Net9-0-20171206-10:44:11-5611
 attr configname Net9
@@ -15,24 +15,23 @@ attr replication #0
 attr resultdir results
 attr runnumber 0
 attr seedset 0
-
 vector 1  Net9.people[1].app  endToEndDelay:vector  ETV
-attr interpolationmode  none
-attr title  "end-to-end delay of arrived packets, vector"
-attr unit  s
-vector 2  Net9.people[2].app  endToEndDelay:vector  ETV
-attr interpolationmode  none
-attr title  "end-to-end delay of arrived packets, vector"
-attr unit  s
-vector 0  Net9.people[0].app  endToEndDelay:vector  ETV
-attr interpolationmode  none
-attr title  "end-to-end delay of arrived packets, vector"
-attr unit  s
-vector 3  Net9.grid[0].app  endToEndDelay:vector  ETV
-attr interpolationmode  none
-attr title  "end-to-end delay of arrived packets, vector"
-attr unit  s
-0	982 33845 61 63988 0.031521371843 13.143893372178 1080 0 7.57281319485 477.54516793126 2339.7368956578
+attr interpolationmode none
+attr title "end-to-end delay of arrived packets, vector"
+attr unit s
 1	34827 36381 26 64025 0.02175130758 13.153953603884 1145 0 7.571083190148 609.77338843604 3138.9403671731
+vector 2  Net9.people[2].app  endToEndDelay:vector  ETV
+attr interpolationmode none
+attr title "end-to-end delay of arrived packets, vector"
+attr unit s
 2	71208 33581 39 64006 0.025860963234 13.148449688992 1077 0 7.541489276366 472.67592418726 2380.6637726605
+vector 0  Net9.people[0].app  endToEndDelay:vector  ETV
+attr interpolationmode none
+attr title "end-to-end delay of arrived packets, vector"
+attr unit s
+0	982 33845 61 63988 0.031521371843 13.143893372178 1080 0 7.57281319485 477.54516793126 2339.7368956578
+vector 3  Net9.grid[0].app  endToEndDelay:vector  ETV
+attr interpolationmode none
+attr title "end-to-end delay of arrived packets, vector"
+attr unit s
 3	104789 23789 145 63961 0.05186624412 13.137569603884 745 0 7.818279325125 1563.5421117609 8082.4469351655

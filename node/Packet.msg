@@ -16,5 +16,6 @@ packet Packet
     int srcAddr;
     int destAddr;
     int hopCount;
+    int nextHop;
 }
 
