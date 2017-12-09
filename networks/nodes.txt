@@ -1,4 +1,4 @@
-# This file is part of the NetBuilder example
+# This file was part of the OMNeT++ NetBuilder example
 # id     name      type
  1       node10      node.Node
  2       node20      node.Node

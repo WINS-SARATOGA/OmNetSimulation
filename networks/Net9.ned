@@ -1,11 +1,14 @@
 //
-// This file is part of an OMNeT++/OMNEST simulation example.
-//
+// This a variation of an OMNeT++/OMNEST simulation example.
 // Copyright (C) 1992-2008 Andras Varga
 //
 // This file is distributed WITHOUT ANY WARRANTY. See the file
 // `license' for details on this and other legal matters.
 //
+// Copyright (C) 2017 Tyler Marshall and Sara Mousavi
+//
+// This file was originally the OMNet++ Net5 example. It was
+// changed to provide better test cases for our project.
 
 package networks;
 
@@ -13,7 +16,7 @@ import node.Node;
 import ned.DatarateChannel;
 
 //
-// A ten-node network topology
+// A nine-node network topology
 //
 network Net9
 {
@@ -29,9 +32,6 @@ network Net9
             datarate = 0.5Mbps;
         }
         submodules:
-        //rte[9]: Node {
-        //    address = index;
-        //}
         people[3]: Node {
             address = index;
         }

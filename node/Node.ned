@@ -6,8 +6,10 @@
 // This file is distributed WITHOUT ANY WARRANTY. See the file
 // `license' for details on this and other legal matters.
 //
-
-//typedef enum Behavior { PEOPLE, GRID, CONVERTER, RADIO } Behavior;
+// Copyright (C) 2017 Tyler Marshall and Sara Mousavi
+//
+// This file was originally an OMNet++ example. It was
+// changed to our project at https://github.com/WINS-SARATOGA/rbn
 
 package node;
 

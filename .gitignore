@@ -1,1 +1,3 @@
 *.o
+.computed/
+.results/
