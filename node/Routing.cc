@@ -93,7 +93,6 @@ void Routing::handleMessage(cMessage *msg)
     //what is this node's myBehavior?
     Packet *pk = check_and_cast<Packet *>(msg);
     int destAddr = pk->getDestAddr();
-    //int srcAddr = pk->getSrcAddr();
     int nextHopBehavior;
     int numNeighbors = getParentModule()->gateSize("port");
 
@@ -106,14 +105,13 @@ void Routing::handleMessage(cMessage *msg)
     }
     else
     {
-        //TODO
-        //this is band aid
         switch(myBehavior)
         {
             case RADIO:
             case CONVERTER:
                 if(myAddress != pk->getNextHop())
                 {
+                    EV << "packet not meant for me, dropping..." << endl;
                     delete pk;
                     return;
                 }

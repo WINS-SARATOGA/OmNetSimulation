@@ -1,5 +1,0 @@
-<<<<<<< HEAD
--O2 -DNDEBUG=1 -MMD -MP -MF .d  -fPIC  -fno-stack-protector -DHAVE_SWAPCONTEXT -DWITH_MPI -DXMLPARSER=libxml -DWITH_TKENV -DWITH_PARSIM -DWITH_NETBUILDER -DWITH_OSG -DWITH_OSGEARTH    -I/home/tylerm/Downloads/omnetpp-5.1.1/include
-=======
--O2 -DNDEBUG=1 -fPIC  -fno-stack-protector -DHAVE_SWAPCONTEXT  -DHAVE_PCAP -DXMLPARSER=libxml -DWITH_PARSIM -DWITH_NETBUILDER  -I. -Ibuilder -Inetworks -Inode -Iparsim -Itemplates -Itemplates/randomtopo -I/home/sara/omnetpp-4.5/include
->>>>>>> 84bb60f012817efad3c247d833ceb309e35f1a4d
