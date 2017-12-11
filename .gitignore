@@ -4,6 +4,7 @@ results/
 out/
 parsim/
 .tkenvrc
+.tkenvlog
 .cproject
 .nedfolders
 .oppbuildspec
